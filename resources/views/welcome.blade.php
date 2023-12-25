@@ -31,7 +31,7 @@
                         <h5 class="card-title">{{ $item->name }}</h5>
                         <p class="card-text">{{ $item->description }}</p>
                         <div class="text-center">
-                            <a href="#" class="btn btn-primary">Add To Cart</a>
+                            <a href="details/{{ $item->id }}" class="btn btn-primary">Product Details</a>
                         </div>
                     </div>
                 </div>
