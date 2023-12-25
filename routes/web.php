@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 /*
@@ -13,8 +14,7 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name("home");
+
+Route::get("/",[ProductsController::class,"index"])->name("home");
 Route::view("/login","login")->name("login");
 Route::post("/login",[UserController::class,"login"]);
