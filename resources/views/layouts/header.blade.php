@@ -15,8 +15,12 @@
           <a class="nav-link" href="{{route("home")}}">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          
+          @if (session()->has("user"))
+              
+          <a class="nav-link" href="">Logout</a>
+          @else
           <a class="nav-link" href="{{ route("login")}}">Login</a>
+          @endif
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -32,7 +36,7 @@
       
       </ul>
       <ul class="navbar-nav mr-auto text-light">
-        <li>Cart({{$total}})</li>
+       <a href="/cartlist"> <li>Cart({{$total}})</li></a>
       </ul>
       <form action="{{route("search")}}" class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">

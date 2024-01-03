@@ -23,4 +23,10 @@ class UserController extends Controller
             return "User not found";
         }
     }
+    public function logout(Request $request)
+    {
+        // Session::flush(); 
+        // Session::forget('user');
+        // return view("/home"); 
+    }
 }
