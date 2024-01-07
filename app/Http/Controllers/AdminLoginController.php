@@ -12,8 +12,8 @@ class AdminLoginController extends Controller
             "email"=>"required|email",
             "password"=>"required"
         ]);
-        if(Auth::guard('admins')->attempt(['email' => $request->email, 'password' => $request->password],$request->get("remember"))){
-            return redirect("admin.dashboard");
+        if(Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])){
+            return redirect("admin/dashboard");
         }else{
             session()->flash("error","Wrong Credentials");
             return back()->withInput($request->only("email"));

@@ -35,13 +35,15 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 Route::group(['prefix' => 'admin'], function() {
-	Route::group(['middleware' => 'admin.guest'], function(){
-		Route::view('/login','admin.login')->name('admin.login');
-		Route::view('/','admin.login')->name('admin.login');
-		Route::post('/login',[AdminLoginController::class, 'authenticate'])->name('admin.auth');
-	});
-	
-	Route::group(['middleware' => 'admin.auth'], function(){
-		Route::get('/dashboard',[DashboardController::class, 'dashboard'])->name('admin.dashboard');
-	});
+    Route::group(['middleware' => 'admin.guest'], function(){
+        Route::view('/login','admin.login')->name('admin.login');
+        Route::view('/','admin.login');
+        Route::post('/login',[AdminLoginController::class, 'authenticate'])->name('admin.auth');
+    });
+    
+    Route::group(['middleware' => 'admin.auth'], function(){
+        Route::get('/dashboard',[App\Http\Controllers\DashboardController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+
+    });
 });
