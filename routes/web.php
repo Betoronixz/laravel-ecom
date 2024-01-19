@@ -43,6 +43,8 @@ Route::group(['prefix' => 'admin'], function() {
     
     Route::group(['middleware' => 'admin.auth'], function(){
         Route::get('/dashboard',[App\Http\Controllers\DashboardController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/add_product',[App\Http\Controllers\DashboardController::class, 'add_product'])->name('admin.add_product');
+        Route::post('/add_product',[App\Http\Controllers\DashboardController::class, 'insert_product'])->name('admin.insert_product');
         Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
     });
