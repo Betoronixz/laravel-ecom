@@ -24,7 +24,7 @@
 
 <body>
     <div id="app">
-        @guest
+        @guest("admin")
         @else
             <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
                 <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{ url('/') }}">
@@ -46,7 +46,7 @@
         @endguest
         <div class="container-fluid">
             <div class="row">
-                @guest
+                @guest("admin")
                 @else
                     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
                         <div class="sidebar-sticky">
@@ -58,7 +58,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="orders">
                                         <span data-feather="file"></span>
                                         Orders
                                     </a>

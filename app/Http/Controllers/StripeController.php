@@ -19,15 +19,18 @@ class StripeController extends Controller
 
     public function session(Request $request)
     {
-        $user_id = session()->get("user")["id"];
+        $user = auth()->user();
+        if ($user) {
+            $user_id = $user->id;
+        }
         $data = DB::table('cart')
             ->join('products', 'cart.product_id', '=', 'products.id')
             ->where('cart.user_id', $user_id)
             ->sum("price");
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-    
-        $variable = $request->all(); 
-    
+
+        $variable = $request->all();
+
         $session = \Stripe\Checkout\Session::create([
             'line_items'  => [
                 [
@@ -45,21 +48,24 @@ class StripeController extends Controller
             'success_url' => route('success', ['variable' => $variable]),
             'cancel_url'  => route('checkout'),
         ]);
-    
+
         // Store paymentIntentId in the session
         session(['paymentIntentId' => $session->payment_intent]);
-    
+
         return redirect()->away($session->url);
     }
-    
+
 
 
     public function success(Request $request)
     {
         $requestData = $request->input('variable');
-        $user_id = session()->get("user")["id"];
+        $user = auth()->user();
+        if ($user) {
+            $user_id = $user->id;
+        }
         $allcart = Cart::where("user_id", $user_id)->get();
-    
+
         foreach ($allcart as $cart) {
             $order = new Order;
             $order->product_id = $cart->product_id;
@@ -71,7 +77,7 @@ class StripeController extends Controller
             $order->paymnet_status = "completed";
             $order->save();
         }
-    
+
         Cart::where("user_id", $user_id)->delete();
         return redirect("/");
     }

@@ -15,12 +15,15 @@
           <a class="nav-link" href="{{route("home")}}">Home <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          @if (session()->has("user"))
-              
-          <a class="nav-link" href="">Logout</a>
-          @else
-          <a class="nav-link" href="{{ route("login")}}">Login</a>
-          @endif
+          @guest
+          <a class="nav-link" href="{{ route("login") }}">Login</a>
+      @else
+          <a class="nav-link" href="{{ route("logout") }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+              @csrf
+          </form>
+      @endguest
+      
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

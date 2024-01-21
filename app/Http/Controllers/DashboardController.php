@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Validator;
@@ -48,4 +49,14 @@ class DashboardController extends Controller
 
         return view("admin/add_product");
     }
+    public function orders(){
+        $data = Order::join('products', 'products.id', '=', 'orders.product_id')
+        ->join('users', 'users.id', '=', 'orders.user_id')
+        ->select('orders.*', 'products.name as product_name', 'users.name as user_name')
+        ->get();
+    
+        return view("admin/orders",["data"=>$data]);
+
+    }
+
 }
