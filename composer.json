@@ -11,6 +11,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.3",
+        "seshac/laravel-shiprocket-api": "^2.0",
         "stripe/stripe-php": "^13.7"
     },
     "require-dev": {
