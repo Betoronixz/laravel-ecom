@@ -26,25 +26,40 @@ class ProductsController extends Controller
         $data = Product::where("name", "LIKE", "%" . $req->search . "%")->take(1)->get();
         return view("search", ["product" => $data[0]]);
     }
-    function add_to_cart(Request $req)
+
+
+    public function add_to_cart(Request $req)
     {
         $user = auth()->user();
+
         if ($user) {
             $user_id = $user->id;
-            $cart = new Cart();
-            $cart->user_id = $user_id;
-            $cart->product_id = $req->product_id;
-            $cart->save();
+            $product_id = $req->product_id;
+            $existingCartItem = Cart::where('user_id', $user_id)
+                ->where('product_id', $product_id)
+                ->first();
+
+            if ($existingCartItem) {
+                $existingCartItem->qty += 1; // You can adjust this logic based on your requirements
+                $existingCartItem->save();
+            } else {
+                $cart = new Cart();
+                $cart->user_id = $user_id;
+                $cart->product_id = $product_id;
+                $cart->qty = 1; // You can set the initial quantity based on your requirements
+                $cart->save();
+            }
             return redirect("/");
         } else {
             return redirect("/");
         }
     }
 
+
     static function cart_count()
     {
         $user = auth()->user();
-        if ($user)  {
+        if ($user) {
 
             $user_id = $user->id;
             $items = Cart::where('user_id', $user_id)->get();
@@ -64,15 +79,46 @@ class ProductsController extends Controller
             $data = DB::table('cart')
                 ->join('products', 'cart.product_id', '=', 'products.id')
                 ->where('cart.user_id', $user_id)
+                ->select(
+                    'cart.id as cart_id', // Alias the cart.id as cart_id
+                    'cart.qty', // Include other columns from the cart table
+                    'products.id as product_id', // Alias the products.id as product_id
+                    'products.*' // Include other columns from the products table
+                )
                 ->get();
 
             return view("cartlist", ["data" => $data]);
         } else {
-            // Handle the case when user information is not available
             return redirect()->route('login'); // Redirect to the login page or handle it appropriately
         }
     }
-
+    public function edit_cart(Request $req)
+    {
+        $cart = Cart::find($req->id);
+        $user = auth()->user();
+    
+        if ($user && $cart && $cart->user_id == $user->id) {
+            $cart->qty = $req->qty;
+            $cart->save();
+            return redirect("/cartlist");
+        } else {
+            return redirect("/login");
+        }
+    }
+    
+    public function delete_cart($id)
+    {
+        $user = auth()->user();
+        $cart = Cart::find($id);
+    
+        if ($user && $cart && $cart->user_id == $user->id) {
+            $cart->delete();
+            return redirect("/cartlist");
+        } else {
+            return redirect("/login");
+        }
+    }
+    
 
     public function ordernow()
     {
@@ -80,12 +126,25 @@ class ProductsController extends Controller
 
         if ($user) {
             $user_id = $user->id;
+        }else{
+            return redirect("/login");
         }
         $data = DB::table('cart')
             ->join('products', 'cart.product_id', '=', 'products.id')
             ->where('cart.user_id', $user_id)
-            ->sum("price");
-        return view("ordernow", ["data" => $data]);
+            ->select(
+                'products.id',
+                'products.name',
+                'products.price',
+                'cart.qty'
+            )
+            ->get();
+        $totalPrice = 0;
+
+        foreach ($data as $item) {
+            $totalPrice += $item->qty * $item->price;
+        }
+        return view("ordernow", ["data" => $totalPrice]);
     }
     public function placeorder(Request $req)
     {
@@ -109,29 +168,5 @@ class ProductsController extends Controller
         Cart::where("user_id", $user_id)->delete();
         return redirect("/");
     }
-    public function edit_product($id)
-    {
-        $data = new Product;
-
-        return view("admin.edit_product", ["data" => $data->find($id)]);
-    }
-    public function update_product(Request $request, $id)
-    {
-        $product = Product::find($id);
-        $product->name = $request->name;
-        $product->category = "LG";
-        $product->price = $request->price;
-        $product->description = $request->description;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' . $extension;
-            $file->move('uploads/products/', $filename);
-            $product->gallery = $filename;
-        }
-        $product->save();
-        Session::flash('message', 'Producty Inserted Succesfully');
-
-        return redirect("admin/edit_product/$id");
-    }
+    
 }

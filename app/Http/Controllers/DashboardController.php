@@ -49,6 +49,7 @@ class DashboardController extends Controller
 
         return view("admin/add_product");
     }
+    
     public function orders(){
         $data = Order::join('products', 'products.id', '=', 'orders.product_id')
         ->join('users', 'users.id', '=', 'orders.user_id')
@@ -57,6 +58,31 @@ class DashboardController extends Controller
     
         return view("admin/orders",["data"=>$data]);
 
+    }
+    public function edit_product($id)
+    {
+        $data = new Product;
+
+        return view("admin.edit_product", ["data" => $data->find($id)]);
+    }
+    public function update_product(Request $request, $id)
+    {
+        $product = Product::find($id);
+        $product->name = $request->name;
+        $product->category = "LG";
+        $product->price = $request->price;
+        $product->description = $request->description;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/products/', $filename);
+            $product->gallery = $filename;
+        }
+        $product->save();
+        Session::flash('message', 'Producty Inserted Succesfully');
+
+        return redirect("admin/edit_product/$id");
     }
 
 }

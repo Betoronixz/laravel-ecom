@@ -202,7 +202,7 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <img src="{{ $product->gallery }}" alt="" width="50%" srcset="">
+                    <img src="{{ asset('uploads/products/' . $product->gallery) }}" alt="" width="50%" srcset="">
                 </div>
                 <div class="col-md-6">
                     <div class="product-dtl">

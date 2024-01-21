@@ -22,6 +22,8 @@ Route::get("/",[ProductsController::class,"index"])->name("home");
 Route::get("/search",[ProductsController::class,"search"])->name("search");
 Route::get("/ordernow",[ProductsController::class,"ordernow"])->name("search");
 Route::get("/cartlist",[ProductsController::class,"cartlist"])->name("cartlist");
+Route::post("/edit-cart",[ProductsController::class,"edit_cart"])->name("edit_cart");
+Route::get("/delete_cart/{id}",[ProductsController::class,"delete_cart"])->name("delete_cart/");
 Route::get("/details/{id}",[ProductsController::class,"details"]);
 Route::post("/placeorder",[ProductsController::class,"placeorder"])->name("placeorder");
 Route::post("/add_to_cart",[ProductsController::class,"add_to_cart"]);
@@ -46,8 +48,8 @@ Route::group(['prefix' => 'admin'], function() {
         Route::get('/orders', [App\Http\Controllers\DashboardController::class, 'orders'])->name('admin.orders');
         Route::get('/add_product', [App\Http\Controllers\DashboardController::class, 'add_product'])->name('admin.add_product');
         Route::post('/add_product', [App\Http\Controllers\DashboardController::class, 'insert_product'])->name('admin.insert_product');
-        Route::get('/edit_product/{id}', [App\Http\Controllers\ProductsController::class, 'edit_product'])->name('admin.edit_product');
-        Route::post('/update_product/{id}', [App\Http\Controllers\ProductsController::class, 'update_product'])->name('admin.update_product');
+        Route::get('/edit_product/{id}', [App\Http\Controllers\DashboardController::class, 'edit_product'])->name('admin.edit_product');
+        Route::post('/update_product/{id}', [App\Http\Controllers\DashboardController::class, 'update_product'])->name('admin.update_product');
         Route::get('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
     });
     

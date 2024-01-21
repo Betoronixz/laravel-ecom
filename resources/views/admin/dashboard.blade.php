@@ -26,7 +26,7 @@
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->price }}</td>
                     <td>{{ $item->description }}</td>
-                    <td><img src="{{ $item->gallery }}" width="100px" alt=""></td>
+                    <td><img src="{{ asset('uploads/products/' . $item->gallery) }}" width="100px" alt=""></td>
                     <td>
                         <div class="btn-gorup">
                             <a href="{{route("admin.edit_product",$item->id)}}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></a>
